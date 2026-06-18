@@ -1,27 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState } from "react";
+import { login, signup, type AuthState } from "@/app/actions/auth";
 
-interface LoginFormProps {
-  onLogin?: (username: string, password: string) => void;
-  onCreateAccount?: (username: string, password: string) => void;
-}
-
-export default function LoginForm({ onLogin, onCreateAccount }: LoginFormProps) {
-  const [loginUsername, setLoginUsername] = useState("");
-  const [loginPassword, setLoginPassword] = useState("");
-  const [signupUsername, setSignupUsername] = useState("");
-  const [signupPassword, setSignupPassword] = useState("");
-
-  function handleLogin(e: React.FormEvent) {
-    e.preventDefault();
-    onLogin?.(loginUsername, loginPassword);
-  }
-
-  function handleCreateAccount(e: React.FormEvent) {
-    e.preventDefault();
-    onCreateAccount?.(signupUsername, signupPassword);
-  }
+export default function LoginForm() {
+  const [loginState, loginAction, loginPending] = useActionState<AuthState, FormData>(
+    login,
+    undefined
+  );
+  const [signupState, signupAction, signupPending] = useActionState<AuthState, FormData>(
+    signup,
+    undefined
+  );
 
   return (
     <div className="flex flex-col gap-8 w-full max-w-sm">
@@ -36,22 +26,25 @@ export default function LoginForm({ onLogin, onCreateAccount }: LoginFormProps) 
           </p>
         </div>
 
-        <form onSubmit={handleLogin} className="flex flex-col gap-4">
+        <form action={loginAction} className="flex flex-col gap-4">
+          {loginState?.error && (
+            <p className="text-sm text-red-500 dark:text-red-400">{loginState.error}</p>
+          )}
+
           <div className="flex flex-col gap-1.5">
             <label
-              htmlFor="login-username"
+              htmlFor="login-email"
               className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
             >
-              Username
+              Email
             </label>
             <input
-              id="login-username"
-              type="text"
-              autoComplete="username"
+              id="login-email"
+              name="email"
+              type="email"
+              autoComplete="email"
               required
-              value={loginUsername}
-              onChange={(e) => setLoginUsername(e.target.value)}
-              placeholder="your_username"
+              placeholder="you@example.com"
               className="h-10 rounded-lg border border-black/[.12] bg-zinc-50 px-3 text-sm text-black placeholder:text-zinc-400 outline-none transition focus:border-black focus:bg-white dark:border-white/[.12] dark:bg-zinc-800 dark:text-white dark:placeholder:text-zinc-500 dark:focus:border-white dark:focus:bg-zinc-900"
             />
           </div>
@@ -65,11 +58,10 @@ export default function LoginForm({ onLogin, onCreateAccount }: LoginFormProps) 
             </label>
             <input
               id="login-password"
+              name="password"
               type="password"
               autoComplete="current-password"
               required
-              value={loginPassword}
-              onChange={(e) => setLoginPassword(e.target.value)}
               placeholder="••••••••"
               className="h-10 rounded-lg border border-black/[.12] bg-zinc-50 px-3 text-sm text-black placeholder:text-zinc-400 outline-none transition focus:border-black focus:bg-white dark:border-white/[.12] dark:bg-zinc-800 dark:text-white dark:placeholder:text-zinc-500 dark:focus:border-white dark:focus:bg-zinc-900"
             />
@@ -77,9 +69,10 @@ export default function LoginForm({ onLogin, onCreateAccount }: LoginFormProps) 
 
           <button
             type="submit"
-            className="mt-1 h-10 w-full rounded-lg bg-black text-sm font-medium text-white transition hover:bg-zinc-800 active:scale-[.98] dark:bg-white dark:text-black dark:hover:bg-zinc-200"
+            disabled={loginPending}
+            className="mt-1 h-10 w-full rounded-lg bg-black text-sm font-medium text-white transition hover:bg-zinc-800 active:scale-[.98] disabled:opacity-50 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
           >
-            Log in
+            {loginPending ? "Signing in…" : "Log in"}
           </button>
         </form>
       </div>
@@ -102,22 +95,45 @@ export default function LoginForm({ onLogin, onCreateAccount }: LoginFormProps) 
           </p>
         </div>
 
-        <form onSubmit={handleCreateAccount} className="flex flex-col gap-4">
+        <form action={signupAction} className="flex flex-col gap-4">
+          {signupState?.error && (
+            <p className="text-sm text-red-500 dark:text-red-400">{signupState.error}</p>
+          )}
+          {signupState?.message && (
+            <p className="text-sm text-green-600 dark:text-green-400">{signupState.message}</p>
+          )}
+
           <div className="flex flex-col gap-1.5">
             <label
-              htmlFor="signup-username"
+              htmlFor="signup-name"
               className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
             >
-              Username
+              Full name
             </label>
             <input
-              id="signup-username"
+              id="signup-name"
+              name="fullName"
               type="text"
-              autoComplete="username"
+              autoComplete="name"
+              placeholder="Jane Smith"
+              className="h-10 rounded-lg border border-black/[.12] bg-zinc-50 px-3 text-sm text-black placeholder:text-zinc-400 outline-none transition focus:border-black focus:bg-white dark:border-white/[.12] dark:bg-zinc-800 dark:text-white dark:placeholder:text-zinc-500 dark:focus:border-white dark:focus:bg-zinc-900"
+            />
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label
+              htmlFor="signup-email"
+              className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+            >
+              Email
+            </label>
+            <input
+              id="signup-email"
+              name="email"
+              type="email"
+              autoComplete="email"
               required
-              value={signupUsername}
-              onChange={(e) => setSignupUsername(e.target.value)}
-              placeholder="choose_a_username"
+              placeholder="you@example.com"
               className="h-10 rounded-lg border border-black/[.12] bg-zinc-50 px-3 text-sm text-black placeholder:text-zinc-400 outline-none transition focus:border-black focus:bg-white dark:border-white/[.12] dark:bg-zinc-800 dark:text-white dark:placeholder:text-zinc-500 dark:focus:border-white dark:focus:bg-zinc-900"
             />
           </div>
@@ -131,11 +147,10 @@ export default function LoginForm({ onLogin, onCreateAccount }: LoginFormProps) 
             </label>
             <input
               id="signup-password"
+              name="password"
               type="password"
               autoComplete="new-password"
               required
-              value={signupPassword}
-              onChange={(e) => setSignupPassword(e.target.value)}
               placeholder="••••••••"
               className="h-10 rounded-lg border border-black/[.12] bg-zinc-50 px-3 text-sm text-black placeholder:text-zinc-400 outline-none transition focus:border-black focus:bg-white dark:border-white/[.12] dark:bg-zinc-800 dark:text-white dark:placeholder:text-zinc-500 dark:focus:border-white dark:focus:bg-zinc-900"
             />
@@ -143,9 +158,10 @@ export default function LoginForm({ onLogin, onCreateAccount }: LoginFormProps) 
 
           <button
             type="submit"
-            className="mt-1 h-10 w-full rounded-lg border border-black/[.12] bg-zinc-50 text-sm font-medium text-black transition hover:bg-zinc-100 active:scale-[.98] dark:border-white/[.12] dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700"
+            disabled={signupPending}
+            className="mt-1 h-10 w-full rounded-lg border border-black/[.12] bg-zinc-50 text-sm font-medium text-black transition hover:bg-zinc-100 active:scale-[.98] disabled:opacity-50 dark:border-white/[.12] dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700"
           >
-            Create account
+            {signupPending ? "Creating account…" : "Create account"}
           </button>
         </form>
       </div>
