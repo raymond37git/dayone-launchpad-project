@@ -7,7 +7,7 @@ export type AuthState =
   | { error?: string; message?: string }
   | undefined;
 
-export async function login(state: AuthState, formData: FormData): Promise<AuthState> {
+export async function login(_state: AuthState, formData: FormData): Promise<AuthState> {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
 
@@ -16,14 +16,19 @@ export async function login(state: AuthState, formData: FormData): Promise<AuthS
   }
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data: { user }, error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) return { error: error.message };
 
-  redirect("/dashboard");
+  const { count } = await supabase
+    .from("user_tags")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", user!.id);
+
+  redirect(count && count > 0 ? "/home" : "/onboarding-get-to-know-you");
 }
 
-export async function signup(state: AuthState, formData: FormData): Promise<AuthState> {
+export async function signup(_state: AuthState, formData: FormData): Promise<AuthState> {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const fullName = (formData.get("fullName") as string) ?? "";
@@ -45,7 +50,7 @@ export async function signup(state: AuthState, formData: FormData): Promise<Auth
     return { message: "Check your email to confirm your account before signing in." };
   }
 
-  redirect("/dashboard");
+  redirect("/onboarding-get-to-know-you");
 }
 
 export async function logout() {
