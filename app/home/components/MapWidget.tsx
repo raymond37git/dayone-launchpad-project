@@ -1,57 +1,116 @@
-// Location dots are approximate positions for APAC cities within the widget bounds
+"use client";
+
+import { useCallback, useState } from "react";
+import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from "@react-google-maps/api";
+
 const LOCATIONS = [
-  { name: "Sydney",    x: "76%", y: "62%" },
-  { name: "Melbourne", x: "63%", y: "72%" },
-  { name: "Brisbane",  x: "78%", y: "49%" },
-  { name: "Perth",     x: "30%", y: "59%" },
-  { name: "Auckland",  x: "90%", y: "68%" },
+  { name: "Sydney",    lat: -33.8688, lng: 151.2093, events: 7 },
+  { name: "Melbourne", lat: -37.8136, lng: 144.9631, events: 3 },
+  { name: "Brisbane",  lat: -27.4698, lng: 153.0251, events: 2 },
+  { name: "Perth",     lat: -31.9505, lng: 115.8605, events: 1 },
+  { name: "Auckland",  lat: -36.8485, lng: 174.7633, events: 1 },
 ];
 
+const CENTER = { lat: -30, lng: 145 };
+
+const MAP_STYLES: google.maps.MapTypeStyle[] = [
+  { elementType: "geometry", stylers: [{ color: "#f5f7fa" }] },
+  { elementType: "labels.text.fill", stylers: [{ color: "#6b7280" }] },
+  { elementType: "labels.text.stroke", stylers: [{ color: "#ffffff" }] },
+  { featureType: "administrative.country", elementType: "geometry.stroke", stylers: [{ color: "#d1d5db" }] },
+  { featureType: "water", elementType: "geometry", stylers: [{ color: "#dbeafe" }] },
+  { featureType: "road", stylers: [{ visibility: "off" }] },
+  { featureType: "poi", stylers: [{ visibility: "off" }] },
+  { featureType: "transit", stylers: [{ visibility: "off" }] },
+  { featureType: "landscape.natural", elementType: "geometry", stylers: [{ color: "#f0fdf4" }] },
+];
+
+const MAP_OPTIONS: google.maps.MapOptions = {
+  styles: MAP_STYLES,
+  disableDefaultUI: true,
+  zoomControl: true,
+  scrollwheel: true,
+  gestureHandling: "cooperative",
+  minZoom: 3,
+  maxZoom: 10,
+};
+
 export function MapWidget() {
-  return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-      {/* Map area */}
-      <div className="relative h-[200px] bg-gradient-to-br from-slate-100 via-slate-50 to-gray-100">
+  const { isLoaded, loadError } = useJsApiLoader({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "",
+  });
 
-        {/* Stylised continent silhouette — purely decorative */}
-        <svg
-          viewBox="0 0 320 200"
-          className="absolute inset-0 w-full h-full opacity-20"
-          aria-hidden
-        >
-          {/* Australia shape (simplified) */}
-          <path
-            d="M160,60 L200,52 L230,58 L252,70 L258,90 L252,115
-               L238,130 L228,148 L210,155 L195,150 L180,158 L168,152
-               L155,155 L148,145 L140,132 L132,118 L130,98 L138,78 Z"
-            fill="#94a3b8"
-          />
-          {/* Tasmania */}
-          <path d="M188,162 L196,158 L202,165 L196,172 L188,168 Z" fill="#94a3b8" />
-          {/* New Zealand (simplified) */}
-          <path d="M272,110 L278,105 L284,112 L280,122 L274,118 Z" fill="#94a3b8" />
-          <path d="M268,126 L274,120 L280,128 L276,140 L268,136 Z" fill="#94a3b8" />
-        </svg>
+  const [map, setMap] = useState<google.maps.Map | null>(null);
+  const [selected, setSelected] = useState<typeof LOCATIONS[number] | null>(null);
 
-        {/* Location dots */}
-        {LOCATIONS.map((loc) => (
-          <div
-            key={loc.name}
-            className="absolute"
-            style={{ left: loc.x, top: loc.y, transform: "translate(-50%, -50%)" }}
-          >
-            <div className="w-2.5 h-2.5 rounded-full bg-[#1d4ed8] border-2 border-white shadow-md" />
-          </div>
-        ))}
+  const onLoad = useCallback((m: google.maps.Map) => setMap(m), []);
+  const onUnmount = useCallback(() => setMap(null), []);
 
-        {/* Watermark */}
-        <div className="absolute bottom-2 left-3 flex items-center gap-1">
-          <svg width="10" height="12" viewBox="0 0 10 12" fill="none" className="opacity-30">
-            <path d="M5 0C2.24 0 0 2.24 0 5c0 3.75 5 7 5 7s5-3.25 5-7c0-2.76-2.24-5-5-5zm0 6.5C4.17 6.5 3.5 5.83 3.5 5S4.17 3.5 5 3.5 6.5 4.17 6.5 5 5.83 6.5 5 6.5z" fill="currentColor"/>
+  if (loadError) {
+    return (
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="h-[220px] flex flex-col items-center justify-center gap-2 bg-gray-50 text-gray-400 text-xs px-4 text-center">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" className="opacity-40">
+            <circle cx="10" cy="10" r="8" />
+            <line x1="10" y1="6" x2="10" y2="10" />
+            <circle cx="10" cy="13.5" r="0.75" fill="currentColor" stroke="none" />
           </svg>
-          <span className="text-[9px] text-gray-400 font-medium">Maps</span>
+          Map unavailable — check API key
         </div>
       </div>
+    );
+  }
+
+  if (!isLoaded) {
+    return (
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="h-[220px] flex items-center justify-center bg-gray-50">
+          <div className="w-5 h-5 rounded-full border-2 border-blue-200 border-t-blue-600 animate-spin" />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+      <GoogleMap
+        mapContainerStyle={{ width: "100%", height: "220px" }}
+        center={CENTER}
+        zoom={4}
+        options={MAP_OPTIONS}
+        onLoad={onLoad}
+        onUnmount={onUnmount}
+        onClick={() => setSelected(null)}
+      >
+        {LOCATIONS.map((loc) => (
+          <Marker
+            key={loc.name}
+            position={{ lat: loc.lat, lng: loc.lng }}
+            onClick={() => setSelected(loc)}
+            icon={{
+              path: google.maps.SymbolPath.CIRCLE,
+              scale: 8,
+              fillColor: "#1d4ed8",
+              fillOpacity: 1,
+              strokeColor: "#ffffff",
+              strokeWeight: 2,
+            }}
+          />
+        ))}
+
+        {selected && (
+          <InfoWindow
+            position={{ lat: selected.lat, lng: selected.lng }}
+            onCloseClick={() => setSelected(null)}
+            options={{ pixelOffset: new google.maps.Size(0, -12) }}
+          >
+            <div className="text-xs font-semibold text-gray-900 px-0.5 py-0.5">
+              <div>{selected.name}</div>
+              <div className="text-blue-600 font-medium mt-0.5">{selected.events} event{selected.events !== 1 ? "s" : ""}</div>
+            </div>
+          </InfoWindow>
+        )}
+      </GoogleMap>
     </div>
   );
 }

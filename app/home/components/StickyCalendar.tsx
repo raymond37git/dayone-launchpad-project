@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const JUNE_START_DOW = 1; // Monday
+const JUNE_START_DOW = 1;
 const DAYS_IN_JUNE = 30;
 const TODAY = 20;
 const EVENT_DAYS = new Set([20, 21, 23, 25, 26, 28]);
@@ -12,7 +12,6 @@ export function StickyCalendar() {
   const [selectedDay, setSelectedDay] = useState<number>(TODAY);
   const [tab, setTab] = useState<"upcoming" | "past">("upcoming");
 
-  // Leading empty cells + day numbers
   const cells: (number | null)[] = [
     ...Array<null>(JUNE_START_DOW).fill(null),
     ...Array.from({ length: DAYS_IN_JUNE }, (_, i) => i + 1),
@@ -21,25 +20,24 @@ export function StickyCalendar() {
   if (rem !== 0) cells.push(...Array<null>(7 - rem).fill(null));
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-2xl border border-[#D5C0A9]/40 shadow-sm overflow-hidden">
 
       {/* Calendar header */}
       <div className="flex items-center justify-between px-4 pt-4 pb-2">
-        <span className="text-base font-bold text-gray-900">June</span>
+        <span className="text-base font-bold text-[#261D20]">June</span>
         <div className="flex items-center gap-1">
           <button
             type="button"
             onClick={() => {}}
-            className="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 active:bg-gray-200 active:scale-90 transition-all text-sm"
+            className="w-6 h-6 flex items-center justify-center rounded-full text-[#BC9579] hover:bg-[#F7E2CE] active:bg-[#D5C0A9] active:scale-90 transition-all text-sm"
           >
             ‹
           </button>
-          {/* Current month dot */}
-          <div className="w-1.5 h-1.5 rounded-full bg-gray-400 mx-0.5" />
+          <div className="w-1.5 h-1.5 rounded-full bg-[#D5C0A9] mx-0.5" />
           <button
             type="button"
             onClick={() => {}}
-            className="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 active:bg-gray-200 active:scale-90 transition-all text-sm"
+            className="w-6 h-6 flex items-center justify-center rounded-full text-[#BC9579] hover:bg-[#F7E2CE] active:bg-[#D5C0A9] active:scale-90 transition-all text-sm"
           >
             ›
           </button>
@@ -49,7 +47,7 @@ export function StickyCalendar() {
       {/* Day-of-week labels */}
       <div className="grid grid-cols-7 px-3">
         {DAY_LABELS.map((l, i) => (
-          <div key={i} className="text-center text-[10px] font-medium text-gray-400 py-1">
+          <div key={i} className="text-center text-[10px] font-medium text-[#BC9579] py-1">
             {l}
           </div>
         ))}
@@ -73,23 +71,18 @@ export function StickyCalendar() {
                 className={[
                   "w-8 h-8 flex items-center justify-center rounded-full text-xs font-medium transition-all active:scale-90",
                   isSelected
-                    ? "bg-[#1d4ed8] text-white"
+                    ? "bg-[#96401F] text-white"
                     : isToday
-                    ? "ring-2 ring-[#1d4ed8] text-[#1d4ed8] font-bold"
+                    ? "ring-2 ring-[#96401F] text-[#96401F] font-bold"
                     : isPast
-                    ? "text-gray-400 hover:bg-gray-100"
-                    : "text-gray-700 hover:bg-gray-100",
+                    ? "text-[#BC9579] hover:bg-[#F7E2CE]"
+                    : "text-[#584B46] hover:bg-[#F7E2CE]",
                 ].join(" ")}
               >
                 {day}
               </button>
-              {/* Event dot */}
               {hasEvent && (
-                <div
-                  className={`w-1 h-1 rounded-full -mt-0.5 ${
-                    isSelected ? "bg-white opacity-70" : "bg-[#1d4ed8]"
-                  }`}
-                />
+                <div className={`w-1 h-1 rounded-full -mt-0.5 ${isSelected ? "bg-white opacity-70" : "bg-[#96401F]"}`} />
               )}
               {!hasEvent && <div className="w-1 h-1 -mt-0.5" />}
             </div>
@@ -98,15 +91,15 @@ export function StickyCalendar() {
       </div>
 
       {/* Upcoming / Past tab strip */}
-      <div className="border-t border-gray-100 grid grid-cols-2">
+      <div className="border-t border-[#D5C0A9]/40 grid grid-cols-2">
         <button
           type="button"
           onClick={() => setTab("upcoming")}
           className={[
-            "py-2.5 text-xs font-semibold transition-all active:bg-gray-50",
+            "py-2.5 text-xs font-semibold transition-all",
             tab === "upcoming"
-              ? "bg-white text-gray-900"
-              : "bg-gray-50 text-gray-400 hover:text-gray-600",
+              ? "bg-white text-[#261D20]"
+              : "bg-[#FCF3E8] text-[#BC9579] hover:text-[#584B46]",
           ].join(" ")}
         >
           Upcoming
@@ -115,10 +108,10 @@ export function StickyCalendar() {
           type="button"
           onClick={() => setTab("past")}
           className={[
-            "py-2.5 text-xs font-semibold transition-all active:bg-gray-50 border-l border-gray-100",
+            "py-2.5 text-xs font-semibold transition-all border-l border-[#D5C0A9]/40",
             tab === "past"
-              ? "bg-white text-gray-900"
-              : "bg-gray-50 text-gray-400 hover:text-gray-600",
+              ? "bg-white text-[#261D20]"
+              : "bg-[#FCF3E8] text-[#BC9579] hover:text-[#584B46]",
           ].join(" ")}
         >
           Past

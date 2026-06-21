@@ -28,12 +28,12 @@ export function FilterTags() {
             className={[
               "text-xs px-3 py-1.5 rounded-full border transition-all active:scale-95 cursor-pointer font-medium",
               isActive
-                ? "bg-gray-900 text-white border-gray-900"
-                : "bg-white text-gray-600 border-gray-200 hover:border-gray-400",
+                ? "bg-[#96401F] text-white border-[#96401F]"
+                : "bg-white text-[#584B46] border-[#D5C0A9] hover:border-[#896D5F]",
             ].join(" ")}
           >
             {f.label}{" "}
-            <span className={isActive ? "text-gray-300" : "text-gray-400"}>
+            <span className={isActive ? "text-[#D5C0A9]" : "text-[#BC9579]"}>
               {f.count}
             </span>
           </button>

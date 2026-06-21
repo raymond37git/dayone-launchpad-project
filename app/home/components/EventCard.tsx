@@ -2,9 +2,6 @@
 
 import type { Event } from "../data/events";
 
-const WEEK_DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
 function formatTime(iso: string): string {
   const d = new Date(iso);
   const h = d.getHours();
@@ -17,11 +14,11 @@ function StatusBadge({ event }: { event: Event }) {
   if (event.status === "Sold Out")
     return <span className="text-xs bg-red-50 text-red-600 border border-red-100 px-2.5 py-0.5 rounded-full font-medium">Sold Out</span>;
   if (event.status === "Waitlist")
-    return <span className="text-xs bg-amber-50 text-amber-700 border border-amber-100 px-2.5 py-0.5 rounded-full font-medium">Waitlist +{event.attendeeCount}</span>;
+    return <span className="text-xs bg-[#F7E2CE] text-[#96401F] border border-[#D5C0A9] px-2.5 py-0.5 rounded-full font-medium">Waitlist +{event.attendeeCount}</span>;
   if (event.price)
     return <span className="text-xs bg-emerald-50 text-emerald-700 border border-emerald-100 px-2.5 py-0.5 rounded-full font-medium">{event.price}</span>;
   if (event.attendeeCount)
-    return <span className="text-xs bg-gray-100 text-gray-600 px-2.5 py-0.5 rounded-full font-medium">+{event.attendeeCount}</span>;
+    return <span className="text-xs bg-[#FCF3E8] text-[#896D5F] px-2.5 py-0.5 rounded-full font-medium">+{event.attendeeCount}</span>;
   return null;
 }
 
@@ -30,16 +27,16 @@ export function EventCard({ event }: { event: Event }) {
     <button
       type="button"
       onClick={() => {}}
-      className="w-full text-left bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex gap-4 hover:shadow-md active:scale-[0.99] active:shadow-sm transition-all cursor-pointer"
+      className="w-full text-left bg-white rounded-2xl border border-[#D5C0A9]/40 shadow-sm p-4 flex gap-4 hover:shadow-md active:scale-[0.99] active:shadow-sm transition-all cursor-pointer"
     >
       {/* Left: content */}
       <div className="flex-1 min-w-0 flex flex-col gap-1.5">
 
         {/* Time */}
-        <p className="text-sm text-gray-400 font-medium">{formatTime(event.dateTime)}</p>
+        <p className="text-sm text-[#BC9579] font-medium">{formatTime(event.dateTime)}</p>
 
         {/* Title */}
-        <h3 className="text-base font-bold text-gray-900 leading-snug line-clamp-2">
+        <h3 className="text-base font-bold text-[#261D20] leading-snug line-clamp-2">
           {event.title}
         </h3>
 
@@ -57,21 +54,21 @@ export function EventCard({ event }: { event: Event }) {
               </div>
             ))}
           </div>
-          <span className="text-xs text-gray-500 truncate">
+          <span className="text-xs text-[#896D5F] truncate">
             By {event.organizers.slice(0, 2).map((o) => o.name).join(", ")}
             {event.organizers.length > 2 ? ` & ${event.organizers.length - 2} more` : ""}
           </span>
         </div>
 
         {/* Location */}
-        <div className="flex items-center gap-1.5 text-xs text-gray-500">
+        <div className="flex items-center gap-1.5 text-xs text-[#896D5F]">
           {event.isVirtual ? (
-            <svg className="w-3 h-3 flex-shrink-0 text-gray-400" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <svg className="w-3 h-3 flex-shrink-0 text-[#BC9579]" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
               <rect x="1" y="3" width="14" height="10" rx="1.5" />
               <polyline points="1,6 8,10 15,6" />
             </svg>
           ) : (
-            <svg className="w-3 h-3 flex-shrink-0 text-gray-400" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <svg className="w-3 h-3 flex-shrink-0 text-[#BC9579]" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
               <path d="M8 1.5a4.5 4.5 0 0 1 4.5 4.5c0 3.5-4.5 8.5-4.5 8.5S3.5 9.5 3.5 6A4.5 4.5 0 0 1 8 1.5z" />
               <circle cx="8" cy="6" r="1.5" />
             </svg>
@@ -94,7 +91,7 @@ export function EventCard({ event }: { event: Event }) {
           </div>
         )}
 
-        {/* Status badge + attendee avatars */}
+        {/* Status badge */}
         {(event.status || event.price || event.attendeeCount) && (
           <div className="flex items-center gap-2 mt-0.5">
             <StatusBadge event={event} />
@@ -115,10 +112,8 @@ export function EventCard({ event }: { event: Event }) {
         )}
       </div>
 
-      {/* Right: thumbnail image */}
-      <div
-        className={`w-[96px] h-[96px] flex-shrink-0 rounded-xl bg-gradient-to-br ${event.gradient} shadow-sm self-start`}
-      />
+      {/* Right: thumbnail */}
+      <div className={`w-[96px] h-[96px] flex-shrink-0 rounded-xl bg-gradient-to-br ${event.gradient} shadow-sm self-start`} />
     </button>
   );
 }

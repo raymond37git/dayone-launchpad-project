@@ -1,7 +1,5 @@
 "use client";
 
-import Image from "next/image";
-
 function XIcon() {
   return (
     <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
@@ -30,67 +28,37 @@ function GlobeIcon() {
 
 export function CommunityHeader() {
   return (
-    <div className="border-b border-gray-100 px-5 py-5">
-      <div className="flex items-start justify-between gap-4">
+    <div className="flex items-start justify-between gap-4 pb-5">
 
-        {/* Left: avatar + info */}
-        <div className="flex items-start gap-4">
-          <div className="w-16 h-16 rounded-2xl bg-[#FCF3E8] border border-[#D5C0A9] flex items-center justify-center flex-shrink-0 overflow-hidden shadow-sm">
-            <Image src="/cozy_leaf_logo.png" alt="Day One" width={44} height={44} />
-          </div>
-
-          <div className="flex flex-col gap-0.5">
-            <h1 className="text-xl font-bold text-gray-900 tracking-tight">Day One</h1>
-            <p className="text-sm text-gray-500 leading-snug max-w-sm">
-              The launchpad for founders, builders &amp; makers.
-              <br />
-              <span className="text-gray-400 text-xs">50+ Cities · 30K+ Community</span>
-            </p>
-
-            {/* Social icon buttons */}
-            <div className="flex items-center gap-1 mt-2">
-              <button
-                type="button"
-                onClick={() => {}}
-                className="w-7 h-7 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-100 active:bg-gray-200 active:scale-90 transition-all"
-              >
-                <XIcon />
-              </button>
-              <button
-                type="button"
-                onClick={() => {}}
-                className="w-7 h-7 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-100 active:bg-gray-200 active:scale-90 transition-all"
-              >
-                <LinkedInIcon />
-              </button>
-              <button
-                type="button"
-                onClick={() => {}}
-                className="w-7 h-7 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-100 active:bg-gray-200 active:scale-90 transition-all"
-              >
-                <GlobeIcon />
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Right: action buttons */}
-        <div className="flex items-center gap-2 flex-shrink-0 pt-1">
-          <button
-            type="button"
-            onClick={() => {}}
-            className="text-sm border border-gray-200 rounded-full px-4 py-1.5 text-gray-700 hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all cursor-pointer"
-          >
-            Map
+      {/* Left: name + description + social icons */}
+      <div className="flex flex-col gap-0.5">
+        <h1 className="text-xl font-bold text-[#261D20] tracking-tight">Day One</h1>
+        <p className="text-sm text-[#896D5F] leading-snug max-w-sm">
+          The launchpad for founders, builders &amp; makers.
+          <br />
+          <span className="text-[#BC9579] text-xs">50+ Cities · 30K+ Community</span>
+        </p>
+        <div className="flex items-center gap-1 mt-2">
+          <button type="button" onClick={() => {}} className="w-7 h-7 flex items-center justify-center rounded-full text-[#BC9579] hover:text-[#584B46] hover:bg-[#F7E2CE] active:bg-[#D5C0A9] active:scale-90 transition-all">
+            <XIcon />
           </button>
-          <button
-            type="button"
-            onClick={() => {}}
-            className="text-sm bg-gray-900 text-white rounded-full px-5 py-1.5 hover:bg-gray-700 active:bg-gray-600 active:scale-95 transition-all cursor-pointer"
-          >
-            Follow
+          <button type="button" onClick={() => {}} className="w-7 h-7 flex items-center justify-center rounded-full text-[#BC9579] hover:text-[#584B46] hover:bg-[#F7E2CE] active:bg-[#D5C0A9] active:scale-90 transition-all">
+            <LinkedInIcon />
+          </button>
+          <button type="button" onClick={() => {}} className="w-7 h-7 flex items-center justify-center rounded-full text-[#BC9579] hover:text-[#584B46] hover:bg-[#F7E2CE] active:bg-[#D5C0A9] active:scale-90 transition-all">
+            <GlobeIcon />
           </button>
         </div>
+      </div>
+
+      {/* Right: action buttons */}
+      <div className="flex items-center gap-2 flex-shrink-0 pt-1">
+        <button type="button" onClick={() => {}} className="text-sm border border-[#D5C0A9] rounded-full px-4 py-1.5 text-[#584B46] hover:bg-[#FCF3E8] active:bg-[#F7E2CE] active:scale-95 transition-all cursor-pointer">
+          Map
+        </button>
+        <button type="button" onClick={() => {}} className="text-sm bg-[#96401F] text-white rounded-full px-5 py-1.5 hover:bg-[#A53B0A] active:bg-[#584B46] active:scale-95 transition-all cursor-pointer">
+          Follow
+        </button>
       </div>
     </div>
   );

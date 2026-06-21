@@ -50,9 +50,9 @@ function DateDivider({ iso }: { iso: string }) {
 
   return (
     <div className="flex items-center gap-3 py-3">
-      <div className={`w-2 h-2 rounded-full flex-shrink-0 ${isToday ? "bg-[#1d4ed8]" : "bg-gray-300"}`} />
-      <span className="text-sm font-semibold text-gray-900">{dayLabel}</span>
-      <span className="text-sm text-gray-400">{dateLabel}</span>
+      <div className={`w-2 h-2 rounded-full flex-shrink-0 ${isToday ? "bg-[#96401F]" : "bg-[#D5C0A9]"}`} />
+      <span className="text-sm font-semibold text-[#261D20]">{dayLabel}</span>
+      <span className="text-sm text-[#BC9579]">{dateLabel}</span>
     </div>
   );
 }
