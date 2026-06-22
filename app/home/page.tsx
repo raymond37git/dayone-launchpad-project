@@ -10,6 +10,7 @@ import { PendingNotification } from "./components/PendingNotification";
 import { EventList } from "./components/EventList";
 import { StickyCalendar } from "./components/StickyCalendar";
 import { MapWidget } from "./components/MapWidget";
+import { CrawlingSnail } from "./components/CrawlingSnail";
 
 export default async function HomePage() {
   const supabase = await createClient();
@@ -52,24 +53,29 @@ export default async function HomePage() {
 
           <EventsHeader />
 
-          <div className="flex gap-6 items-start">
+          <div className="flex flex-col md:flex-row gap-6 items-start">
 
-            {/* ── Left column: event list ───────────────── */}
-            <div className="flex-1 min-w-0">
-              <FilterTags />
-              <PendingNotification />
-              <EventList />
-            </div>
-
-            {/* ── Right column: sticky sidebar ─────────── */}
-            <div className="w-[280px] flex-shrink-0">
-              <div className="sticky top-20 flex flex-col gap-4 pt-3">
+            {/* ── Right column: sidebar — first in DOM so it stacks above events on narrow ── */}
+            <div className="w-full md:w-[280px] md:flex-shrink-0 md:order-last">
+              <div className="md:sticky md:top-20 flex flex-col gap-4 pt-3">
                 <StickyCalendar />
                 <MapWidget />
               </div>
             </div>
 
+            {/* ── Left column: event list ───────────────── */}
+            <div className="flex-1 min-w-0 w-full md:order-first">
+              <FilterTags />
+              <PendingNotification />
+              <EventList />
+            </div>
+
           </div>
+        </div>
+
+        {/* ── Snail ─────────────────────────────────────── */}
+        <div className="max-w-5xl mx-auto px-5 pb-4">
+          <CrawlingSnail />
         </div>
       </main>
     </div>

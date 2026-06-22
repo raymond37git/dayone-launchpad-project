@@ -10,7 +10,6 @@ const DAY_LABELS = ["M", "T", "W", "T", "F", "S", "S"];
 
 export function StickyCalendar() {
   const [selectedDay, setSelectedDay] = useState<number>(TODAY);
-  const [tab, setTab] = useState<"upcoming" | "past">("upcoming");
 
   const cells: (number | null)[] = [
     ...Array<null>(JUNE_START_DOW).fill(null),
@@ -23,25 +22,8 @@ export function StickyCalendar() {
     <div className="bg-white rounded-2xl border border-[#D5C0A9]/40 shadow-sm overflow-hidden">
 
       {/* Calendar header */}
-      <div className="flex items-center justify-between px-4 pt-4 pb-2">
+      <div className="px-4 pt-4 pb-2">
         <span className="text-base font-bold text-[#261D20]">June</span>
-        <div className="flex items-center gap-1">
-          <button
-            type="button"
-            onClick={() => {}}
-            className="w-6 h-6 flex items-center justify-center rounded-full text-[#BC9579] hover:bg-[#F7E2CE] active:bg-[#D5C0A9] active:scale-90 transition-all text-sm"
-          >
-            ‹
-          </button>
-          <div className="w-1.5 h-1.5 rounded-full bg-[#D5C0A9] mx-0.5" />
-          <button
-            type="button"
-            onClick={() => {}}
-            className="w-6 h-6 flex items-center justify-center rounded-full text-[#BC9579] hover:bg-[#F7E2CE] active:bg-[#D5C0A9] active:scale-90 transition-all text-sm"
-          >
-            ›
-          </button>
-        </div>
       </div>
 
       {/* Day-of-week labels */}
@@ -90,33 +72,6 @@ export function StickyCalendar() {
         })}
       </div>
 
-      {/* Upcoming / Past tab strip */}
-      <div className="border-t border-[#D5C0A9]/40 grid grid-cols-2">
-        <button
-          type="button"
-          onClick={() => setTab("upcoming")}
-          className={[
-            "py-2.5 text-xs font-semibold transition-all",
-            tab === "upcoming"
-              ? "bg-white text-[#261D20]"
-              : "bg-[#FCF3E8] text-[#BC9579] hover:text-[#584B46]",
-          ].join(" ")}
-        >
-          Upcoming
-        </button>
-        <button
-          type="button"
-          onClick={() => setTab("past")}
-          className={[
-            "py-2.5 text-xs font-semibold transition-all border-l border-[#D5C0A9]/40",
-            tab === "past"
-              ? "bg-white text-[#261D20]"
-              : "bg-[#FCF3E8] text-[#BC9579] hover:text-[#584B46]",
-          ].join(" ")}
-        >
-          Past
-        </button>
-      </div>
     </div>
   );
 }

@@ -33,3 +33,13 @@ body {
 .toast-enter {
   animation: slide-up-fade-in 0.2s ease-out forwards;
 }
+
+@keyframes snail-bob {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-4px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-snail-bob {
+  animation: snail-bob 1.2s ease-in-out infinite;
+}
