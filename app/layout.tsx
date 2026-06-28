@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Dayone Launchpad",
   description: "Dayone Launchpad",
-  icons: { icon: "/cozy_leaf_logo.png" },
+  icons: { icon: "/Picture 1.png" },
 };
 
 export default function RootLayout({

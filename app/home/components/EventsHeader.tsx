@@ -22,9 +22,9 @@ export function EventsHeader({
       <h2 className="text-xl font-bold text-[#261D20]">Events</h2>
 
       <div className="flex items-center gap-2">
-        {/* For Me button */}
+        {/* For Me button with tooltip on hover */}
         {hasUserTags && (
-          <div className="flex items-center gap-1.5">
+          <div className="relative group">
             <button
               type="button"
               onClick={onForMeToggle}
@@ -32,16 +32,9 @@ export function EventsHeader({
             >
               For Me
             </button>
-
-            {/* Info tooltip */}
-            <div className="relative group">
-              <div className="w-3.5 h-3.5 flex items-center justify-center rounded-full border border-[#BC9579] text-[#BC9579] text-[8px] font-bold cursor-default select-none leading-none">
-                i
-              </div>
-              <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 top-5 z-30 hidden group-hover:block w-52 rounded-lg bg-[#261D20] px-3 py-2 text-xs text-white shadow-xl">
-                Filter for interests that match my profile.
-                <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#261D20] rotate-45" />
-              </div>
+            <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-8 z-30 hidden group-hover:block w-52 rounded-lg bg-[#261D20] px-3 py-2 text-xs text-white shadow-xl whitespace-normal">
+              Filter for interests that match my profile.
+              <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#261D20] rotate-45" />
             </div>
           </div>
         )}

@@ -55,21 +55,18 @@ body {
   border: 1.5px solid #D5C0A9;
   background: white;
   color: #584B46;
-  transition: color 0.15s, border-color 0.15s, transform 0.15s;
+  transition: border-color 0.2s, transform 0.15s;
 }
 
 .for-me-btn:hover,
 .for-me-btn.active {
-  background: linear-gradient(
-    270deg,
-    #7c3aed, #a855f7, #ec4899,
-    #6366f1, #0ea5e9, #8b5cf6,
-    #7c3aed
-  );
+  background:
+    linear-gradient(white, white) padding-box,
+    linear-gradient(270deg, #7c3aed, #a855f7, #ec4899, #6366f1, #0ea5e9, #8b5cf6, #7c3aed) border-box;
   background-size: 300% 300%;
   animation: galaxy-shift 2.5s ease infinite;
   border-color: transparent;
-  color: white;
+  color: #584B46;
 }
 
 .for-me-btn:active {

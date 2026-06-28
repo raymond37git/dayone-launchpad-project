@@ -126,7 +126,7 @@ export function MapWidget() {
           >
             <>
               <style>{INFO_WINDOW_RESET}</style>
-              <div style={{ padding: "6px 10px", fontSize: 12, fontWeight: 600, color: "#261D20", maxWidth: 150, lineHeight: 1.35 }}>
+              <div style={{ padding: "6px 10px", fontSize: 12, fontWeight: 600, color: "#BC9579", maxWidth: 150, lineHeight: 1.35 }}>
                 {hoveredEvent.title}
               </div>
             </>

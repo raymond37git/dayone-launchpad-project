@@ -11,7 +11,7 @@ export function TopNavBar() {
 
         {/* Logo — pinned left */}
         <div className="flex items-center gap-2 flex-shrink-0">
-          <Image src="/cozy_leaf_logo.png" alt="Day One" width={28} height={28} />
+          <Image src="/Picture 1.png" alt="Day One" width={28} height={28} />
           <span className="font-bold text-[#261D20] text-[15px] tracking-tight">Day One</span>
         </div>
 

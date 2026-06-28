@@ -31,6 +31,7 @@ export type Event = {
   category?: string;
   tags: Tag[];
   gradient: string;
+  image?: string;
 };
 
 export const EVENTS: Event[] = [
@@ -48,6 +49,7 @@ export const EVENTS: Event[] = [
     attendeeCount: 45,
     tags: t("Startups", "Consulting"),
     gradient: "from-violet-400 to-purple-600",
+    image: "/startupimage/event-1.png",
   },
   {
     id: "evt-2",
@@ -62,6 +64,7 @@ export const EVENTS: Event[] = [
     attendeeCount: 128,
     tags: t("AI", "Product"),
     gradient: "from-cyan-400 to-blue-600",
+    image: "/startupimage/event-2.png",
   },
   {
     id: "evt-3",
@@ -77,6 +80,7 @@ export const EVENTS: Event[] = [
     attendeeCount: 67,
     tags: t("Startups", "Design"),
     gradient: "from-amber-400 to-orange-500",
+    image: "/startupimage/event-3.png",
   },
   {
     id: "evt-4",
@@ -92,6 +96,7 @@ export const EVENTS: Event[] = [
     attendeeCount: 31,
     tags: t("Product", "Startups"),
     gradient: "from-rose-400 to-pink-600",
+    image: "/startupimage/event-4.png",
   },
   {
     id: "evt-5",
@@ -107,6 +112,7 @@ export const EVENTS: Event[] = [
     attendeeCount: 89,
     tags: t("Startups", "Product"),
     gradient: "from-emerald-400 to-teal-600",
+    image: "/startupimage/event-5.png",
   },
   {
     id: "evt-6",
@@ -121,6 +127,7 @@ export const EVENTS: Event[] = [
     attendeeCount: 214,
     tags: t("AI", "Finance"),
     gradient: "from-sky-400 to-indigo-600",
+    image: "/startupimage/event-6.png",
   },
   {
     id: "evt-7",
@@ -136,6 +143,7 @@ export const EVENTS: Event[] = [
     price: "A$25",
     tags: t("Startups", "Finance"),
     gradient: "from-fuchsia-400 to-purple-600",
+    image: "/startupimage/event-7.png",
   },
   {
     id: "evt-8",
@@ -152,6 +160,7 @@ export const EVENTS: Event[] = [
     attendeeCount: 300,
     tags: t("AI", "Cybersecurity"),
     gradient: "from-red-400 to-rose-600",
+    image: "/startupimage/event-8.png",
   },
   {
     id: "evt-9",
@@ -167,6 +176,7 @@ export const EVENTS: Event[] = [
     price: "A$15",
     tags: t("Product", "Marketing"),
     gradient: "from-lime-400 to-green-600",
+    image: "/startupimage/event-9.png",
   },
   {
     id: "evt-10",
@@ -185,6 +195,7 @@ export const EVENTS: Event[] = [
     category: "Conference",
     tags: t("Startups", "Consulting"),
     gradient: "from-yellow-400 to-amber-500",
+    image: "/startupimage/event-10.png",
   },
   {
     id: "evt-11",
@@ -199,6 +210,7 @@ export const EVENTS: Event[] = [
     attendeeCount: 52,
     tags: t("AI", "Startups"),
     gradient: "from-orange-400 to-red-500",
+    image: "/startupimage/event-11.png",
   },
   {
     id: "evt-12",
@@ -211,5 +223,6 @@ export const EVENTS: Event[] = [
     price: "A$50",
     tags: t("Design", "Marketing"),
     gradient: "from-green-400 to-emerald-600",
+    image: "/startupimage/event-12.png",
   },
 ];

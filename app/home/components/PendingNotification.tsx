@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 
-export function PendingNotification() {
+interface Props {
+  savedCount: number;
+}
+
+export function PendingNotification({ savedCount }: Props) {
   const [dismissed, setDismissed] = useState(false);
 
   if (dismissed) return null;
@@ -12,7 +16,7 @@ export function PendingNotification() {
       <div className="flex items-center gap-2">
         <div className="w-1.5 h-1.5 rounded-full bg-[#96401F] flex-shrink-0" />
         <p className="text-xs text-[#584B46]">
-          You have <span className="font-semibold">0 events</span> pending approval
+          You have <span className="font-semibold">{savedCount} {savedCount === 1 ? "event" : "events"}</span> saved
         </p>
       </div>
       <button

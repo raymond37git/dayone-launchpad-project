@@ -87,7 +87,7 @@ export function EventsSection({ userTags }: Props) {
         {/* Left column — event list */}
         <div className="flex-1 min-w-0 w-full md:order-first">
           <FilterTags activeTags={activeTags} onTagSelect={handleTagSelect} />
-          <PendingNotification />
+          <PendingNotification savedCount={savedEventIds.length} />
           <EventList
             selectedDate={selectedDate}
             activeTags={activeTags}

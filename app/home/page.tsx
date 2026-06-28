@@ -36,15 +36,23 @@ export default async function HomePage() {
           {/* Logo sits at the bottom edge of the banner, half overlapping down */}
           <div className="absolute bottom-0 left-0 right-0 z-10 pointer-events-none">
             <div className="max-w-5xl mx-auto px-5">
-              <div className="w-[76px] h-[76px] rounded-2xl bg-[#FCF3E8] border-[3px] border-white shadow-lg flex items-center justify-center overflow-hidden translate-y-1/2 pointer-events-auto">
-                <Image src="/cozy_leaf_logo.png" alt="Day One" width={54} height={54} />
+              <div className="w-[76px] h-[76px] rounded-2xl bg-white border-[3px] border-white shadow-lg flex items-center justify-center overflow-hidden translate-y-1/2 pointer-events-auto">
+                <Image src="/Picture 1.png" alt="Day One" width={72} height={72} />
               </div>
             </div>
           </div>
         </div>
 
+        {/* ── Highlight caption below banner ─────────────── */}
+        <div className="max-w-5xl mx-auto flex justify-end px-5 mt-1.5">
+          <p className="text-[11px] text-[#BC9579]">
+            <span className="font-semibold text-[#96401F]">✦ Highlight of the week</span>
+            {" · "}SXSW Sydney Hackathon × Build Club: Supercharging Work with AI
+          </p>
+        </div>
+
         {/* ── CommunityHeader — pt accommodates overlapping logo ── */}
-        <div className="bg-white border-b border-[#D5C0A9]/30">
+        <div className="border-b border-[#D5C0A9]/30">
           <div className="max-w-5xl mx-auto px-5 pt-12">
             <CommunityHeader />
           </div>
