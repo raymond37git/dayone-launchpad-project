@@ -22,23 +22,50 @@ function StatusBadge({ event }: { event: Event }) {
   return null;
 }
 
-export function EventCard({ event }: { event: Event }) {
+interface Props {
+  event: Event;
+  isSaved: boolean;
+  onToggleSave: (id: string) => void;
+}
+
+export function EventCard({ event, isSaved, onToggleSave }: Props) {
   return (
-    <button
-      type="button"
-      onClick={() => {}}
-      className="w-full text-left bg-white rounded-2xl border border-[#D5C0A9]/40 shadow-sm p-4 flex gap-4 hover:shadow-md active:scale-[0.99] active:shadow-sm transition-all cursor-pointer"
-    >
+    <div id={`event-${event.id}`} className="w-full text-left bg-white rounded-2xl border border-[#D5C0A9]/40 shadow-sm p-4 flex gap-4 hover:shadow-md transition-all">
       {/* Left: content */}
       <div className="flex-1 min-w-0 flex flex-col gap-1.5">
 
         {/* Time */}
         <p className="text-sm text-[#BC9579] font-medium">{formatTime(event.dateTime)}</p>
 
-        {/* Title */}
-        <h3 className="text-base font-bold text-[#261D20] leading-snug line-clamp-2">
-          {event.title}
-        </h3>
+        {/* Title row — title + save button */}
+        <div className="flex items-start justify-between gap-2">
+          <h3 className="text-base font-bold text-[#261D20] leading-snug line-clamp-2 flex-1">
+            {event.title}
+          </h3>
+          <button
+            type="button"
+            onClick={() => onToggleSave(event.id)}
+            aria-label={isSaved ? "Unsave event" : "Save event"}
+            className={[
+              "flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-lg transition-all active:scale-90",
+              isSaved
+                ? "text-[#96401F]"
+                : "text-[#D5C0A9] hover:text-[#96401F]",
+            ].join(" ")}
+          >
+            <svg
+              className="w-4 h-4"
+              viewBox="0 0 16 16"
+              fill={isSaved ? "currentColor" : "none"}
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M3 2h10a1 1 0 0 1 1 1v11l-6-3-6 3V3a1 1 0 0 1 1-1z" />
+            </svg>
+          </button>
+        </div>
 
         {/* Organizers */}
         <div className="flex items-center gap-2">
@@ -114,6 +141,6 @@ export function EventCard({ event }: { event: Event }) {
 
       {/* Right: thumbnail */}
       <div className={`w-[96px] h-[96px] flex-shrink-0 rounded-xl bg-gradient-to-br ${event.gradient} shadow-sm self-start`} />
-    </button>
+    </div>
   );
 }

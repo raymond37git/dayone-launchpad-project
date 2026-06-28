@@ -4,12 +4,7 @@ import { createClient } from "@/lib/supabase-server";
 import { TopNavBar } from "./components/TopNavBar";
 import { HeroBanner } from "./components/HeroBanner";
 import { CommunityHeader } from "./components/CommunityHeader";
-import { EventsHeader } from "./components/EventsHeader";
-import { FilterTags } from "./components/FilterTags";
-import { PendingNotification } from "./components/PendingNotification";
-import { EventList } from "./components/EventList";
-import { StickyCalendar } from "./components/StickyCalendar";
-import { MapWidget } from "./components/MapWidget";
+import { EventsSection } from "./components/EventsSection";
 import { CrawlingSnail } from "./components/CrawlingSnail";
 
 export default async function HomePage() {
@@ -17,6 +12,13 @@ export default async function HomePage() {
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) redirect("/");
+
+  const { data: userTagRows } = await supabase
+    .from("user_tags")
+    .select("tag")
+    .eq("user_id", user.id);
+
+  const userTags = userTagRows?.map((r) => r.tag as string) ?? [];
 
   return (
     <div className="min-h-screen bg-[#FCF3E8]">
@@ -48,29 +50,9 @@ export default async function HomePage() {
           </div>
         </div>
 
-        {/* ── Two-column content ────────────────────────── */}
+        {/* ── Events content ────────────────────────────── */}
         <div className="max-w-5xl mx-auto px-5">
-
-          <EventsHeader />
-
-          <div className="flex flex-col md:flex-row gap-6 items-start">
-
-            {/* ── Right column: sidebar — first in DOM so it stacks above events on narrow ── */}
-            <div className="w-full md:w-[280px] md:flex-shrink-0 md:order-last">
-              <div className="md:sticky md:top-20 flex flex-col gap-4 pt-3">
-                <StickyCalendar />
-                <MapWidget />
-              </div>
-            </div>
-
-            {/* ── Left column: event list ───────────────── */}
-            <div className="flex-1 min-w-0 w-full md:order-first">
-              <FilterTags />
-              <PendingNotification />
-              <EventList />
-            </div>
-
-          </div>
+          <EventsSection userTags={userTags} />
         </div>
 
         {/* ── Snail ─────────────────────────────────────── */}

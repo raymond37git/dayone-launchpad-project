@@ -3,24 +3,7 @@ import { EventCard } from "./EventCard";
 
 const WEEK_DAYS_LONG = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-function formatDateLabel(iso: string): string {
-  const d = new Date(iso);
-  const isToday = d.toDateString() === new Date("2026-06-20").toDateString();
-  const dayName = isToday ? "Today" : WEEK_DAYS_LONG[d.getDay()];
-  return `${dayName}  ${MONTHS[d.getMonth()]} ${d.getDate()}`;
-}
-
-function formatDayPart(iso: string): string {
-  const d = new Date(iso);
-  const isToday = d.toDateString() === new Date("2026-06-20").toDateString();
-  return isToday ? "Today" : WEEK_DAYS_LONG[d.getDay()];
-}
-
-function formatDatePart(iso: string): string {
-  const d = new Date(iso);
-  return `${WEEK_DAYS_LONG[d.getDay()]}`;
-}
+const TODAY_STRING = new Date().toDateString();
 
 function getDateKey(iso: string): string {
   const d = new Date(iso);
@@ -44,7 +27,7 @@ function groupByDate(events: Event[]): EventGroup[] {
 
 function DateDivider({ iso }: { iso: string }) {
   const d = new Date(iso);
-  const isToday = d.toDateString() === new Date("2026-06-20").toDateString();
+  const isToday = d.toDateString() === TODAY_STRING;
   const dayLabel = isToday ? "Today" : WEEK_DAYS_LONG[d.getDay()];
   const dateLabel = `${MONTHS[d.getMonth()]} ${d.getDate()}`;
 
@@ -57,8 +40,36 @@ function DateDivider({ iso }: { iso: string }) {
   );
 }
 
-export function EventList() {
-  const groups = groupByDate(EVENTS);
+interface Props {
+  selectedDate: string | null;
+  activeTags: string[];
+  showSaved: boolean;
+  savedEventIds: string[];
+  onToggleSave: (id: string) => void;
+}
+
+export function EventList({ selectedDate, activeTags, showSaved, savedEventIds, onToggleSave }: Props) {
+  const filtered = EVENTS.filter((e) => {
+    if (selectedDate && !e.dateTime.startsWith(selectedDate)) return false;
+    if (activeTags.length > 0 && !e.tags.some((t) => activeTags.includes(t.label))) return false;
+    if (showSaved && !savedEventIds.includes(e.id)) return false;
+    return true;
+  });
+
+  const groups = groupByDate(filtered);
+
+  if (groups.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 gap-2">
+        <p className="text-sm font-medium text-[#584B46]">
+          {showSaved ? "No saved events yet" : "No events match your filters"}
+        </p>
+        <p className="text-xs text-[#BC9579]">
+          {showSaved ? "Hit the bookmark on any event to save it" : "Try a different tag or date"}
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col pb-16">
@@ -67,7 +78,12 @@ export function EventList() {
           <DateDivider iso={group.iso} />
           <div className="flex flex-col gap-3">
             {group.events.map((event) => (
-              <EventCard key={event.id} event={event} />
+              <EventCard
+                key={event.id}
+                event={event}
+                isSaved={savedEventIds.includes(event.id)}
+                onToggleSave={onToggleSave}
+              />
             ))}
           </div>
         </div>

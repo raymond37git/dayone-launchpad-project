@@ -43,3 +43,35 @@ body {
 .animate-snail-bob {
   animation: snail-bob 1.2s ease-in-out infinite;
 }
+
+/* ── For Me button ───────────────────────────────── */
+@keyframes galaxy-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.for-me-btn {
+  border: 1.5px solid #D5C0A9;
+  background: white;
+  color: #584B46;
+  transition: color 0.15s, border-color 0.15s, transform 0.15s;
+}
+
+.for-me-btn:hover,
+.for-me-btn.active {
+  background: linear-gradient(
+    270deg,
+    #7c3aed, #a855f7, #ec4899,
+    #6366f1, #0ea5e9, #8b5cf6,
+    #7c3aed
+  );
+  background-size: 300% 300%;
+  animation: galaxy-shift 2.5s ease infinite;
+  border-color: transparent;
+  color: white;
+}
+
+.for-me-btn:active {
+  transform: scale(0.96);
+}

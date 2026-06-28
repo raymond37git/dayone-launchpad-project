@@ -1,30 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { EVENTS } from "../data/events";
+import { INTEREST_TAG_LABELS } from "@/app/lib/tags";
 
-const FILTERS = [
-  { label: "AI", count: 4 },
-  { label: "Sydney", count: 7 },
-  { label: "Virtual", count: 3 },
-  { label: "Networking", count: 3 },
-  { label: "Hackathon", count: 2 },
-  { label: "Melbourne", count: 1 },
-  { label: "Conference", count: 1 },
-  { label: "Demo", count: 1 },
-];
+const TAG_COUNTS = INTEREST_TAG_LABELS.map((label) => ({
+  label,
+  count: EVENTS.filter((e) => e.tags.some((t) => t.label === label)).length,
+})).filter((t) => t.count > 0);
 
-export function FilterTags() {
-  const [active, setActive] = useState<string | null>(null);
+interface Props {
+  activeTags: string[];
+  onTagSelect: (tag: string) => void;
+}
 
+export function FilterTags({ activeTags, onTagSelect }: Props) {
   return (
     <div className="flex gap-2 flex-wrap py-3">
-      {FILTERS.map((f) => {
-        const isActive = active === f.label;
+      {TAG_COUNTS.map((f) => {
+        const isActive = activeTags.includes(f.label);
         return (
           <button
             key={f.label}
             type="button"
-            onClick={() => setActive(isActive ? null : f.label)}
+            onClick={() => onTagSelect(f.label)}
             className={[
               "text-xs px-3 py-1.5 rounded-full border transition-all active:scale-95 cursor-pointer font-medium",
               isActive

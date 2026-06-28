@@ -2,27 +2,23 @@
 
 import { useCallback, useState } from "react";
 import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from "@react-google-maps/api";
+import { EVENTS } from "../data/events";
 
-const LOCATIONS = [
-  { name: "Sydney",    lat: -33.8688, lng: 151.2093, events: 7 },
-  { name: "Melbourne", lat: -37.8136, lng: 144.9631, events: 3 },
-  { name: "Brisbane",  lat: -27.4698, lng: 153.0251, events: 2 },
-  { name: "Perth",     lat: -31.9505, lng: 115.8605, events: 1 },
-  { name: "Auckland",  lat: -36.8485, lng: 174.7633, events: 1 },
-];
+const PINNED_EVENTS = EVENTS.filter((e) => e.lat !== undefined && e.lng !== undefined);
 
-const CENTER = { lat: -30, lng: 145 };
+const CENTER = { lat: -33.8688, lng: 151.2073 };
 
 const MAP_STYLES: google.maps.MapTypeStyle[] = [
   { elementType: "geometry", stylers: [{ color: "#f5f7fa" }] },
   { elementType: "labels.text.fill", stylers: [{ color: "#6b7280" }] },
   { elementType: "labels.text.stroke", stylers: [{ color: "#ffffff" }] },
-  { featureType: "administrative.country", elementType: "geometry.stroke", stylers: [{ color: "#d1d5db" }] },
   { featureType: "water", elementType: "geometry", stylers: [{ color: "#dbeafe" }] },
-  { featureType: "road", stylers: [{ visibility: "off" }] },
+  { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#e5e7eb" }] },
+  { featureType: "road.arterial", elementType: "geometry", stylers: [{ color: "#f3f4f6" }] },
+  { featureType: "road.local", elementType: "geometry", stylers: [{ color: "#ffffff" }] },
   { featureType: "poi", stylers: [{ visibility: "off" }] },
   { featureType: "transit", stylers: [{ visibility: "off" }] },
-  { featureType: "landscape.natural", elementType: "geometry", stylers: [{ color: "#f0fdf4" }] },
+  { featureType: "landscape.man_made", elementType: "geometry", stylers: [{ color: "#f9fafb" }] },
 ];
 
 const MAP_OPTIONS: google.maps.MapOptions = {
@@ -31,20 +27,34 @@ const MAP_OPTIONS: google.maps.MapOptions = {
   zoomControl: true,
   scrollwheel: true,
   gestureHandling: "cooperative",
-  minZoom: 3,
-  maxZoom: 10,
+  minZoom: 11,
+  maxZoom: 17,
 };
+
+// Injected into every InfoWindow to strip the default close button and padding
+const INFO_WINDOW_RESET = `
+  .gm-ui-hover-effect { display: none !important; }
+  .gm-style-iw-chr { display: none !important; }
+  .gm-style-iw-c { padding: 0 !important; box-shadow: 0 2px 8px rgba(0,0,0,0.12) !important; border-radius: 8px !important; }
+  .gm-style-iw-d { padding: 0 !important; overflow: hidden !important; }
+  .gm-style-iw-t::after { display: none !important; }
+`;
 
 export function MapWidget() {
   const { isLoaded, loadError } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "",
   });
 
-  const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [selected, setSelected] = useState<typeof LOCATIONS[number] | null>(null);
+  const [, setMap] = useState<google.maps.Map | null>(null);
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   const onLoad = useCallback((m: google.maps.Map) => setMap(m), []);
   const onUnmount = useCallback(() => setMap(null), []);
+
+  function scrollToEvent(id: string) {
+    const el = document.getElementById(`event-${id}`);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
 
   if (loadError) {
     return (
@@ -71,43 +81,55 @@ export function MapWidget() {
     );
   }
 
+  const hoveredEvent = hoveredId ? PINNED_EVENTS.find((e) => e.id === hoveredId) : null;
+
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
       <GoogleMap
         mapContainerStyle={{ width: "100%", height: "220px" }}
         center={CENTER}
-        zoom={4}
+        zoom={12}
         options={MAP_OPTIONS}
         onLoad={onLoad}
         onUnmount={onUnmount}
-        onClick={() => setSelected(null)}
+        onClick={() => setHoveredId(null)}
       >
-        {LOCATIONS.map((loc) => (
+        {PINNED_EVENTS.map((event) => (
           <Marker
-            key={loc.name}
-            position={{ lat: loc.lat, lng: loc.lng }}
-            onClick={() => setSelected(loc)}
+            key={event.id}
+            position={{ lat: event.lat!, lng: event.lng! }}
+            onMouseOver={() => setHoveredId(event.id)}
+            onMouseOut={() => setHoveredId(null)}
+            onClick={() => {
+              setHoveredId(null);
+              scrollToEvent(event.id);
+            }}
             icon={{
               path: google.maps.SymbolPath.CIRCLE,
-              scale: 8,
+              scale: 5,
               fillColor: "#1d4ed8",
               fillOpacity: 1,
               strokeColor: "#ffffff",
-              strokeWeight: 2,
+              strokeWeight: 1.5,
             }}
           />
         ))}
 
-        {selected && (
+        {/* Single hover InfoWindow — renders above whichever dot is hovered */}
+        {hoveredEvent && (
           <InfoWindow
-            position={{ lat: selected.lat, lng: selected.lng }}
-            onCloseClick={() => setSelected(null)}
-            options={{ pixelOffset: new google.maps.Size(0, -12) }}
+            position={{ lat: hoveredEvent.lat!, lng: hoveredEvent.lng! }}
+            options={{
+              pixelOffset: new google.maps.Size(0, -14),
+              disableAutoPan: true,
+            }}
           >
-            <div className="text-xs font-semibold text-gray-900 px-0.5 py-0.5">
-              <div>{selected.name}</div>
-              <div className="text-blue-600 font-medium mt-0.5">{selected.events} event{selected.events !== 1 ? "s" : ""}</div>
-            </div>
+            <>
+              <style>{INFO_WINDOW_RESET}</style>
+              <div style={{ padding: "6px 10px", fontSize: 12, fontWeight: 600, color: "#261D20", maxWidth: 150, lineHeight: 1.35 }}>
+                {hoveredEvent.title}
+              </div>
+            </>
           </InfoWindow>
         )}
       </GoogleMap>

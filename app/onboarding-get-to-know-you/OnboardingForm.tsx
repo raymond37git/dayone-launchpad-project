@@ -2,18 +2,9 @@
 
 import { useState, useRef } from "react";
 import { saveUserTags, updateUserTags } from "@/app/actions/tags";
+import { INTEREST_TAG_LABELS } from "@/app/lib/tags";
 
-const PREDEFINED_TAGS = [
-  "AI",
-  "Design",
-  "Finance",
-  "Consulting",
-  "Healthcare",
-  "Product",
-  "Startups",
-  "Cybersecurity",
-  "Marketing",
-];
+const PREDEFINED_TAGS = INTEREST_TAG_LABELS;
 
 interface Props {
   initialTags?: string[];
