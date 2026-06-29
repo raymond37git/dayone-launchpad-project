@@ -4,7 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { logout } from "@/app/actions/auth";
 
-export function TopNavBar() {
+interface Props {
+  avatarUrl?: string | null;
+}
+
+export function TopNavBar({ avatarUrl }: Props) {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur border-b border-[#D5C0A9]/40">
       <div className="h-14 flex items-center justify-between px-5">
@@ -19,8 +23,17 @@ export function TopNavBar() {
         <div className="flex items-center gap-1 flex-shrink-0">
           <Link
             href="/onboarding-get-to-know-you?edit=1"
-            className="text-sm text-[#584B46] hover:text-[#261D20] px-3 py-1.5 rounded-lg hover:bg-[#FCF3E8] active:bg-[#F7E2CE] transition-all"
+            className="flex items-center gap-2 text-sm text-[#584B46] hover:text-[#261D20] px-3 py-1.5 rounded-lg hover:bg-[#FCF3E8] active:bg-[#F7E2CE] transition-all"
           >
+            {/* Avatar circle */}
+            <span className="w-6 h-6 rounded-full overflow-hidden border border-[#D5C0A9] bg-[#FCF3E8] flex items-center justify-center flex-shrink-0">
+              {avatarUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={avatarUrl} alt="Profile" className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-[11px]">👤</span>
+              )}
+            </span>
             Profile
           </Link>
 

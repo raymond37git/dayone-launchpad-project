@@ -25,6 +25,15 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+@keyframes page-reveal {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.animate-page-reveal {
+  animation: page-reveal 4.5s ease forwards;
+}
+
 @keyframes slide-up-fade-in {
   from { opacity: 0; transform: translateX(-50%) translateY(12px); }
   to   { opacity: 1; transform: translateX(-50%) translateY(0); }

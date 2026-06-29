@@ -6,6 +6,7 @@ import { HeroBanner } from "./components/HeroBanner";
 import { CommunityHeader } from "./components/CommunityHeader";
 import { EventsSection } from "./components/EventsSection";
 import { CrawlingSnail } from "./components/CrawlingSnail";
+import { PageRevealOverlay } from "./components/PageRevealOverlay";
 
 export default async function HomePage() {
   const supabase = await createClient();
@@ -20,10 +21,19 @@ export default async function HomePage() {
 
   const userTags = userTagRows?.map((r) => r.tag as string) ?? [];
 
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("avatar_url")
+    .eq("id", user.id)
+    .single();
+
+  const avatarUrl = profile?.avatar_url ?? null;
+
   return (
     <div className="min-h-screen bg-[#FCF3E8]">
+      <PageRevealOverlay />
       {/* ── TopNavBar ─────────────────────────────────── */}
-      <TopNavBar />
+      <TopNavBar avatarUrl={avatarUrl} />
 
       <main className="pt-14">
 

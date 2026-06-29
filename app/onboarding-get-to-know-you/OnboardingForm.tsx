@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { saveUserTags, updateUserTags } from "@/app/actions/tags";
 import { INTEREST_TAG_LABELS } from "@/app/lib/tags";
 
@@ -21,9 +23,11 @@ export default function OnboardingForm({ initialTags = [], editMode = false }: P
   const [inputValue, setInputValue] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const [fading, setFading] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const router = useRouter();
 
   function showToast(tag: string) {
     if (toastTimer.current) clearTimeout(toastTimer.current);
@@ -89,12 +93,28 @@ export default function OnboardingForm({ initialTags = [], editMode = false }: P
     if (result?.error) {
       setError(result.error);
       setPending(false);
+      return;
+    }
+    if (!editMode && (result as { success?: boolean })?.success) {
+      setFading(true);
+      setTimeout(() => router.push("/home"), 1100);
     }
   }
 
   const otherActive = otherOpen || customTags.length > 0;
 
   return (
+    <>
+      {/* Full-screen fade-out overlay with adventure text */}
+      <div
+        className="fixed inset-0 z-50 bg-[#FCF3E8] pointer-events-none transition-opacity duration-[1000ms] flex items-center justify-center"
+        style={{ opacity: fading ? 1 : 0 }}
+      >
+        <p className="text-[34px] font-semibold text-[#96401F] tracking-tight text-center px-8 italic">
+          Your adventure starts here...
+        </p>
+      </div>
+
     <div className="flex flex-col gap-8 w-full max-w-lg">
       <div className="flex flex-col gap-2">
         <h1 className="text-3xl font-semibold tracking-tight text-[#96401F]">
@@ -214,6 +234,14 @@ export default function OnboardingForm({ initialTags = [], editMode = false }: P
         {pending ? "Saving…" : editMode ? "Save interests" : "Continue"}
       </button>
 
+      {/* Restart — testing only, returns to start of onboarding */}
+      <Link
+        href="/onboarding"
+        className="h-9 w-full rounded-lg border border-[#D5C0A9] bg-white text-sm font-medium text-[#896D5F] transition hover:border-[#BC9579] hover:text-[#584B46] active:scale-[.98] flex items-center justify-center"
+      >
+        ← Restart
+      </Link>
+
       {/* Removal toast */}
       {toast && (
         <div
@@ -224,5 +252,6 @@ export default function OnboardingForm({ initialTags = [], editMode = false }: P
         </div>
       )}
     </div>
+    </>
   );
 }

@@ -25,7 +25,7 @@ export async function login(_state: AuthState, formData: FormData): Promise<Auth
     .select("*", { count: "exact", head: true })
     .eq("user_id", user!.id);
 
-  redirect(count && count > 0 ? "/home" : "/onboarding-get-to-know-you");
+  redirect(count && count > 0 ? "/home" : "/onboarding");
 }
 
 export async function signup(_state: AuthState, formData: FormData): Promise<AuthState> {
@@ -50,7 +50,7 @@ export async function signup(_state: AuthState, formData: FormData): Promise<Aut
     return { message: "Check your email to confirm your account before signing in." };
   }
 
-  redirect("/onboarding-get-to-know-you");
+  redirect("/onboarding");
 }
 
 export async function logout() {
