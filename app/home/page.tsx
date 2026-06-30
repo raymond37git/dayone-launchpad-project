@@ -1,11 +1,10 @@
 import { redirect } from "next/navigation";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase-server";
-import { TopNavBar } from "./components/TopNavBar";
+import { SpriteShell } from "./components/SpriteShell";
 import { HeroBanner } from "./components/HeroBanner";
 import { CommunityHeader } from "./components/CommunityHeader";
 import { EventsSection } from "./components/EventsSection";
-import { CrawlingSnail } from "./components/CrawlingSnail";
 import { PageRevealOverlay } from "./components/PageRevealOverlay";
 
 export default async function HomePage() {
@@ -30,10 +29,9 @@ export default async function HomePage() {
   const avatarUrl = profile?.avatar_url ?? null;
 
   return (
-    <div className="min-h-screen bg-[#FCF3E8]">
+    <div className="relative min-h-screen bg-[#FCF3E8]">
       <PageRevealOverlay />
-      {/* ── TopNavBar ─────────────────────────────────── */}
-      <TopNavBar avatarUrl={avatarUrl} />
+      <SpriteShell avatarUrl={avatarUrl} />
 
       <main className="pt-14">
 
@@ -73,10 +71,6 @@ export default async function HomePage() {
           <EventsSection userTags={userTags} />
         </div>
 
-        {/* ── Snail ─────────────────────────────────────── */}
-        <div className="max-w-5xl mx-auto px-5 pb-4">
-          <CrawlingSnail />
-        </div>
       </main>
     </div>
   );

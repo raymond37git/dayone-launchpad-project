@@ -38,7 +38,6 @@ export function EventsSection({ userTags }: Props) {
     );
   }
 
-  // Derived: which tags are currently active
   const activeTags: string[] = forMe ? userTags : selectedTag ? [selectedTag] : [];
 
   function handleForMeToggle() {
@@ -70,11 +69,22 @@ export function EventsSection({ userTags }: Props) {
         savedCount={savedEventIds.length}
       />
 
-      <div className="flex flex-col md:flex-row gap-6 items-start">
+      {/* FilterTags and notification sit above the two-column layout so the
+          sidebar's natural top aligns with the first event row — this lets
+          position:sticky engage at exactly the right scroll position. */}
+      <FilterTags activeTags={activeTags} onTagSelect={handleTagSelect} />
+      <PendingNotification savedCount={savedEventIds.length} />
 
-        {/* Right column — calendar + map */}
+      {/* Two-column layout — no items-start so the right column stretches to
+          the full height of the event list, which is required for sticky. */}
+      <div className="flex flex-col md:flex-row gap-6">
+
+        {/* Right column — calendar + map, always sticky once user scrolls to events */}
         <div className="w-full md:w-[280px] md:flex-shrink-0 md:order-last">
-          <div className="md:sticky md:top-20 flex flex-col gap-4 pt-3">
+          {/* Spacer matches DateDivider height (py-3 + text-sm = 44px) so the
+              calendar's natural top aligns with the first event card row */}
+          <div className="hidden md:block h-11" />
+          <div className="md:sticky md:top-20 flex flex-col gap-4">
             <StickyCalendar
               selectedDate={selectedDate}
               onDateSelect={setSelectedDate}
@@ -86,8 +96,6 @@ export function EventsSection({ userTags }: Props) {
 
         {/* Left column — event list */}
         <div className="flex-1 min-w-0 w-full md:order-first">
-          <FilterTags activeTags={activeTags} onTagSelect={handleTagSelect} />
-          <PendingNotification savedCount={savedEventIds.length} />
           <EventList
             selectedDate={selectedDate}
             activeTags={activeTags}

@@ -4,13 +4,11 @@ import type { Event } from "../data/events";
 
 function StatusBadge({ event }: { event: Event }) {
   if (event.status === "Sold Out")
-    return <span className="text-xs bg-red-50 text-red-600 border border-red-100 px-2.5 py-0.5 rounded-full font-medium">Sold Out</span>;
+    return <span className="text-xs bg-red-50 text-red-600 border border-red-100 px-2.5 py-0.5 rounded-full font-medium whitespace-nowrap">Sold Out</span>;
   if (event.status === "Waitlist")
-    return <span className="text-xs bg-[#F7E2CE] text-[#96401F] border border-[#D5C0A9] px-2.5 py-0.5 rounded-full font-medium">Waitlist +{event.attendeeCount}</span>;
+    return <span className="text-xs bg-[#F7E2CE] text-[#96401F] border border-[#D5C0A9] px-2.5 py-0.5 rounded-full font-medium whitespace-nowrap">Waitlist +{event.attendeeCount}</span>;
   if (event.price)
-    return <span className="text-xs bg-emerald-50 text-emerald-700 border border-emerald-100 px-2.5 py-0.5 rounded-full font-medium">{event.price}</span>;
-  if (event.attendeeCount)
-    return <span className="text-xs bg-[#FCF3E8] text-[#896D5F] px-2.5 py-0.5 rounded-full font-medium">+{event.attendeeCount}</span>;
+    return <span className="text-xs bg-emerald-50 text-emerald-700 border border-emerald-100 px-2.5 py-0.5 rounded-full font-medium whitespace-nowrap">{event.price}</span>;
   return null;
 }
 
@@ -21,10 +19,17 @@ interface Props {
 }
 
 export function EventCard({ event, isSaved, onToggleSave }: Props) {
+  const hasStatus = !!(event.status || event.price);
+  const hasTags   = event.tags.length > 0;
+  const showStatusTagRow = hasStatus || hasTags;
+  const attendeeCount = event.attendeeCount ?? 0;
+  // Waitlist badge already includes the count, so don't double-show
+  const showAttendeeRow = attendeeCount > 0 && event.status !== "Waitlist";
+
   return (
     <div id={`event-${event.id}`} className="w-full text-left bg-white rounded-2xl border border-[#D5C0A9]/40 shadow-sm p-4 hover:shadow-md transition-all">
 
-      {/* Title row — full width with save button */}
+      {/* Title row */}
       <div className="flex items-start justify-between gap-2 mb-2">
         <h3 className="text-base font-bold text-[#261D20] leading-snug line-clamp-2 flex-1">
           {event.title}
@@ -52,25 +57,12 @@ export function EventCard({ event, isSaved, onToggleSave }: Props) {
         </button>
       </div>
 
-      {/* Bottom section — details left, image right */}
+      {/* Middle section — details left, image right */}
       <div className="flex gap-4 items-start">
-
         <div className="flex-1 min-w-0 flex flex-col gap-1.5">
 
           {/* Organizers */}
-          <div className="flex items-center gap-2">
-            <div className="flex -space-x-1.5">
-              {event.organizers.slice(0, 3).map((org) => (
-                <div
-                  key={org.name}
-                  title={org.name}
-                  className="w-5 h-5 rounded-full border-2 border-white flex items-center justify-center text-[8px] font-bold text-white flex-shrink-0"
-                  style={{ backgroundColor: org.color }}
-                >
-                  {org.initials[0]}
-                </div>
-              ))}
-            </div>
+          <div className="flex items-center">
             <span className="text-xs text-[#896D5F] truncate">
               By {event.organizers.slice(0, 2).map((o) => o.name).join(", ")}
               {event.organizers.length > 2 ? ` & ${event.organizers.length - 2} more` : ""}
@@ -93,14 +85,14 @@ export function EventCard({ event, isSaved, onToggleSave }: Props) {
             <span className="truncate">{event.location}</span>
           </div>
 
-          {/* Colored tags */}
-          {event.tags.length > 0 && (
-            <div className="flex gap-1.5 flex-wrap mt-0.5">
-              {event.tags.map((tag) => (
+          {/* Status + tags on the same line — tags match FilterTags pill style */}
+          {showStatusTagRow && (
+            <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+              {hasStatus && <StatusBadge event={event} />}
+              {hasTags && event.tags.map((tag) => (
                 <span
                   key={tag.label}
-                  className="text-xs px-2 py-0.5 rounded-full font-medium"
-                  style={{ backgroundColor: tag.bg, color: tag.text }}
+                  className="text-xs px-2.5 py-0.5 rounded-full font-medium bg-white text-[#584B46] border border-[#D5C0A9] whitespace-nowrap"
                 >
                   {tag.label}
                 </span>
@@ -108,28 +100,9 @@ export function EventCard({ event, isSaved, onToggleSave }: Props) {
             </div>
           )}
 
-          {/* Status badge */}
-          {(event.status || event.price || event.attendeeCount) && (
-            <div className="flex items-center gap-2 mt-0.5">
-              <StatusBadge event={event} />
-              {event.attendeeCount && !event.status && !event.price && (
-                <div className="flex -space-x-1">
-                  {event.organizers.slice(0, 3).map((org) => (
-                    <div
-                      key={org.name}
-                      className="w-4 h-4 rounded-full border border-white flex items-center justify-center text-[7px] font-bold text-white"
-                      style={{ backgroundColor: org.color }}
-                    >
-                      {org.initials[0]}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
         </div>
 
-        {/* Event image — starts inline with organizer row */}
+        {/* Event image */}
         <div className="w-[88px] h-[88px] flex-shrink-0 rounded-xl overflow-hidden shadow-sm bg-[#F7E2CE]">
           {event.image ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -142,8 +115,39 @@ export function EventCard({ event, isSaved, onToggleSave }: Props) {
             <div className={`w-full h-full bg-gradient-to-br ${event.gradient}`} />
           )}
         </div>
-
       </div>
+
+      {/* Attendee row — dedicated last row, full-width, visually distinct from tag pills */}
+      {showAttendeeRow && (
+        <div className="flex items-center gap-2.5 mt-3 pt-2.5 border-t border-[#D5C0A9]/40">
+          {/* Avatar stack — 20% bigger than before (16px → 19px) */}
+          <div className="flex -space-x-1.5">
+            {event.organizers.slice(0, 3).map((org) => (
+              <div
+                key={org.name}
+                title={org.name}
+                className="rounded-full border-2 border-white flex items-center justify-center font-bold text-white flex-shrink-0"
+                style={{ width: 19, height: 19, fontSize: 7, backgroundColor: org.color }}
+              >
+                {org.initials[0]}
+              </div>
+            ))}
+          </div>
+          {/* People icon */}
+          <svg className="w-3.5 h-3.5 text-[#BC9579] flex-shrink-0" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+            <circle cx="6" cy="5" r="2.5" />
+            <path d="M1 14c0-2.8 2.2-5 5-5s5 2.2 5 5" />
+            <path d="M11 3a2.5 2.5 0 0 1 0 5" opacity=".6" />
+            <path d="M14 14c0-2.2-1.4-4-3.5-4.7" opacity=".6" />
+          </svg>
+          <span className="text-xs font-semibold text-[#584B46]">
+            {attendeeCount >= 1000
+              ? `${(attendeeCount / 1000).toFixed(1).replace(/\.0$/, "")}k`
+              : attendeeCount}{" "}
+            <span className="font-normal text-[#896D5F]">interested</span>
+          </span>
+        </div>
+      )}
     </div>
   );
 }

@@ -53,6 +53,16 @@ body {
   animation: snail-bob 1.2s ease-in-out infinite;
 }
 
+/* ── Sprite hover float ──────────────────────────── */
+@keyframes sprite-float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-5px); }
+}
+
+.sprite-float {
+  animation: sprite-float 0.9s ease-in-out infinite;
+}
+
 /* ── For Me button ───────────────────────────────── */
 @keyframes galaxy-shift {
   0%   { background-position: 0% 50%; }
